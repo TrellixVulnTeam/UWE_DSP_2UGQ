@@ -1,0 +1,16 @@
+{
+    "department":{
+        "mens": {
+            "quantity": 50,
+            "size":{
+                
+            }
+        },
+        "ladies": {
+            "quantity": 52
+        },
+        "childrens": {
+            "quantity": 30
+        }
+    }
+}
