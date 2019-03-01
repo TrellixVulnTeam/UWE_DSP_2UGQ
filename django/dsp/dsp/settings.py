@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'djchoices',
     'rest_framework',
+    'django_icons',
 ]
 
 MIDDLEWARE = [
@@ -123,3 +124,12 @@ DATE_INPUT_FORMATS = ['%Y-%m-%d']
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Email
+EMAIL_HOST = 'smtp-mail.outlook.com'
+
+EMAIL_HOST_USER = open(os.getcwd() + '/dsp/email_user.txt', 'r').read()
+
+EMAIL_HOST_PASSWORD = open(os.getcwd() + '/dsp/email_pass.txt', 'r').read()
+
+EMAIL_USE_TLS   = True

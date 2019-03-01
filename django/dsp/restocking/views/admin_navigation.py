@@ -5,11 +5,13 @@ from django.shortcuts import redirect
 from django.views import generic
 from restocking.forms import ProductFinderForm
 
-class IndexView(generic.ListView):
+from restocking.models import Product
+
+class AdminIndexView(generic.ListView):
     """
     Home page for admin for application
     """
-    template_name = 'admin/restocking/index.html'
+    template_name = 'administration/index.html'
 
     def get_queryset(self):
         return None
@@ -18,7 +20,7 @@ class ProductFinderView(generic.FormView):
     """
     Admin tool to find products
     """
-    template_name = 'admin/restocking/product_finder.html'
+    template_name = 'administration/product_finder.html'
     form_class = ProductFinderForm
 
     def form_valid(self, form):
@@ -30,3 +32,35 @@ class ProductFinderView(generic.FormView):
             return redirect('restocking:product_finder_results')
         else:
             return redirect('restocking:tag_encoder_pick_product')
+
+class ProductFinderResults(generic.ListView):
+    """
+    Retrieves and displays the results from a product finder query
+    """
+    model = Product
+    template_name = 'administration/show_product_finder_results.html'
+    context_object_name = 'results'
+
+    def get_queryset(self):
+        form = self.request.session['form']
+
+        tuples_list = (
+            ['filter_name', 'name', 'icontains'],
+            ['filter_size', 'size', 'exact'],
+            ['filter_colour', 'colour', 'exact'],
+            ['filter_fitting', 'fitting', 'exact'],
+            ['filter_price', 'price', 'contains'],
+            ['filter_sale', 'sale', 'exact'],
+            ['filter_product_type', 'product_type', 'exact'],
+            ['filter_product_code', 'product_code', 'exact'],
+            ['filter_department', 'department', 'exact']
+        )
+
+        #Queries are lazy so this will not search for all products initially.
+        query = Product.objects.all()
+
+        for field_filter, field, query_type in tuples_list:
+            if form[field_filter] is False:
+                query = query.filter(**{field + '__' + query_type: form[field]})
+
+        return query

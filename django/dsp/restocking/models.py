@@ -60,7 +60,7 @@ class Product(models.Model):
     codes = validator.RegexValidator(r'[A-Z]', 'Only capital alphabet characters are allowed.')
 
     def __str__(self):
-        return self.name + " (" + str(self.size) + " " + self.fitting + ") (" + self.colour + ")"
+        return self.name + " size " + str(self.size) + " " + self.fitting + " in " + self.colour
 
     name = models.CharField(max_length=50)
     size = models.DecimalField(max_digits=4, decimal_places=1, choices=Size.choices)
@@ -77,20 +77,21 @@ class Product(models.Model):
 class Order(models.Model):
     order_processed = models.BooleanField(default=False)
     order_delivered = models.BooleanField(default=False)
-    delivery_date = models.DateField(null=True, blank=True)
+    delivery_date = models.DateField(null=True, blank=True, unique=True)
     delivery_processed = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.delivery_date)
 
 class OrderItem(models.Model):
     quantity = models.IntegerField(default=1, validators=[validator.MinValueValidator(1, "There is a value that is less than 0")])
     processed = models.IntegerField(default=0, validators=[validator.MinValueValidator(0, "There is a value that is less than 0")])
     product = models.ForeignKey('Product', related_name='product', on_delete=models.CASCADE)
     order = models.ForeignKey('Order', related_name='items', on_delete=models.CASCADE)
+    added = models.BooleanField(default=False)
 
     def __str__(self):
-        return (str(self.product) + ' (' + str(self.quantity) + ')')
+        return (str(self.product) + ' (' + str(self.processed) + '/' + str(self.quantity)) + ')'
 
 class User(models.Model):
     password = models.CharField(max_length=12)

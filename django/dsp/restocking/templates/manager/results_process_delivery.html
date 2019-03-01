@@ -1,0 +1,60 @@
+<!doctype html>
+{% load static %}
+{% load icons %}
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+            rel="stylesheet"
+            integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+            crossorigin="anonymous"
+        >
+        <link rel="stylesheet" type="text/css" href="{% static 'style_manager.css' %}">
+    </head>
+    <body>
+        <nav class="navbar navbar-static-top">
+            <div class="container">
+                <div class="row" style="text-align: center">
+                    <h1>{{ delivery.0.order.delivery_date }}</h1>
+                </div>
+            </div>
+        </nav>
+        <div class="container">   
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Colour</th>
+                    <th>Quantity</th>
+                    <th>Processed</th>
+                    <th>Discrepencies</th>
+                    <th>Discrepency Type</th>
+                </tr>
+                {% for item in delivery %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.product.size }} {{ item.product.fitting }}</td>
+                        <td>{{ item.product.colour }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.processed }}</td>
+                        {% if item.added == True %}
+                            <td>{% icon 'exclamation' title='Item was not on original order' %}</td>
+                            <td>Item was not on original order</td>
+                        {% elif item.processed > item.quantity %}
+                            <td>{% icon 'exclamation' title='Extra items on order.' %}</td>
+                            <td>Extra items on order</td>
+                        {% elif item.processed != item.quantity %}
+                            <td>{% icon 'exclamation' title='Item not processed' %}</td>
+                            <td>Item not processed</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+            <br>
+            <p><i>Make sure all discrepencies are identified before processing the delivery.</i></p>
+            <p><a href="{% url 'restocking:process_delivery' delivery_date=delivery.0.order.delivery_date %}">Process Delivery</a></p>
+        </div>
+    </body>
+</html>
