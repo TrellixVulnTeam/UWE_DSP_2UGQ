@@ -8,15 +8,15 @@ import 'package:restocking_app/model/Order.dart';
 
 
 class MakeRequest{
-  static const String conn = 'http://86.132.253.113:8000/restocking/rest';
+  static const String conn = 'http://192.168.1.186:8000/restocking/rest';
   static Future<http.Response> getRequest(Query query) async{
-    final response = await http.get('$conn/${query.model}/${query.query}/');
+    final response = await http.get('$conn/${query.model}/${query.query}');
     return response;
   }
 
   ///Returns the items on an order.
   static Future<Order> encodeOrder(Query query) async{
-    final response = await http.get('$conn/${query.model}/${query.query}/');
+    final response = await http.get('$conn/${query.model}/${query.query}');
 
     if (response.statusCode == 200) {
       //Serialise the response from the Django server into an order object.

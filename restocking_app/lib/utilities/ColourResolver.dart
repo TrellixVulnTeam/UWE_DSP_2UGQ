@@ -14,6 +14,8 @@ class ColorResolver{
         break;
       case 'Black':
         return Colors.black;
+      case 'Tan':
+        return Color.fromRGBO(210, 180, 140, 100);
       default:
         return Colors.white;
     }

@@ -1,0 +1,44 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="{% static 'admin/style.css' %}">
+    </head>
+    <body>
+        {% csrf_token %}
+        <h1>Results</h1>
+        <table align=center>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Size</th>
+        <th>Colour</th>
+        <th>Fitting</th>
+        <th>Price</th>
+        <th>Sale</th>
+        <th>Type</th>
+        <th>Code</th>
+        <th>Department</th>
+        <th>Floor Quantity</th>
+        <th>Stock Quantity</th>
+        {% for result in results %}
+            <tr>
+                <td>{{result.id}}</td>
+                <td>{{result.name}}</td>
+                <td>{{result.size}}</td>
+                <td>{{result.colour}}</td>
+                <td>{{result.fitting}}</td>
+                <td>{{result.price}}</td>
+                <td>{{result.sale}}</td>
+                <td>{{result.product_type}}</td>
+                <td>{{result.product_code}}</td>
+                <td>{{result.department}}</td>
+                <td>{{result.floor_quantity}}</td>
+                <td>{{result.stock_quantity}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>
