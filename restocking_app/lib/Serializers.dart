@@ -1,5 +1,6 @@
 import 'model/Order.dart';
 import 'model/Product.dart';
+import 'model/RestockingList.dart';
 import 'dart:convert';
 
 class Serializers {
@@ -8,7 +9,7 @@ class Serializers {
 
     List<OrderItem> orderItems = new List<OrderItem>();
 
-    for (var item in data['items']) {
+    for (var item in data['order_items']) {
       orderItems.add(OrderItem(
         orderItemId: item['id'],
         quantity: item['quantity'],
@@ -56,6 +57,40 @@ class Serializers {
       productCode: data['product_code'],
       department: data['department'],
       stockQuantity: data['stock_quantity']
+    );
+  }
+
+  static RestockingList restockingListSerializer(String responseBody){
+    Map<String, dynamic> data = json.decode(responseBody);
+
+    List<RestockingListItem> restockingListItems = new List<RestockingListItem>();
+
+    for (var item in data['restocking_items']) {
+      restockingListItems.add(RestockingListItem(
+        restockingListItemId: item['id'],
+        quantity: item['quantity'],
+        processed: item['processed'],
+        product: Product(
+          productId: item['product']['id'],
+          name: item['product']['name'],
+          size: item['product']['size'],
+          colour: item['product']['colour'],
+          fitting: item['product']['fitting'],
+          price: item['product']['price'],
+          sale: item['product']['sale'],
+          productType: item['product']['product_type'],
+          productCode: item['product']['product_code'],
+          department: item['product']['department'],
+          stockQuantity: item['product']['stock_quantity']
+        )
+      ));
+    }
+
+    return RestockingList(
+      restockingListId: data['id'],
+      date: data['date'],
+      time: data['time'],
+      restockingListItems: restockingListItems
     );
   }
 

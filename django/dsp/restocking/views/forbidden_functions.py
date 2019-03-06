@@ -14,7 +14,7 @@ from restocking.models import Product
 
 def add_quantities(request):
     """
-    Test assigning random(ish) quantities to each product.
+    Assigning random(ish) quantities to each product.
     """
 
     path = os.getcwd()
@@ -117,5 +117,33 @@ def add_data(request):
                             )
         print('created department products')
 
+
+    return HttpResponse("DONE")
+
+def add_floor_quantities(request):
+    _pop_chance = 40
+
+    path = os.getcwd()
+    with open(path + '\\restocking\\data\\initial_shop_floor_levels.json') as data_file:
+        quantity_data = json.load(data_file)
+
+    product_set = Product.objects.all()
+
+    for product in product_set:
+        if product.size in quantity_data['department'][product.department]['size_data']['common']:
+            size_category = 'common'
+        else:
+            size_category = 'uncommon'
+
+        if '.5' in str(product.size):
+            size_half = 'half'
+        else:
+            size_half = 'whole'
+
+        quantity = quantity_data['department'][product.department]['code'][product.product_code]['size'][size_category][size_half]
+        if random.randint(0, 100) <= _pop_chance:
+            quantity += -1
+        product.floor_quantity = quantity
+        product.save()
 
     return HttpResponse("DONE")

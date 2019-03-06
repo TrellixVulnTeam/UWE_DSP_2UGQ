@@ -37,7 +37,7 @@ class ResultsProcessDelivery(generic.ListView):
 
     def get_queryset(self):
         order_id = Order.objects.get(delivery_date__exact=self.kwargs['delivery']).id
-        return OrderItem.objects.filter(order__exact=order_id)
+        return OrderItem.objects.filter(order__exact=order_id).order_by('product__department', 'product__name')
 
 def process_delivery(request, delivery_date):
     """

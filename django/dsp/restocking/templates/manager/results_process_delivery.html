@@ -27,6 +27,7 @@
                     <th>Name</th>
                     <th>Size</th>
                     <th>Colour</th>
+                    <th>Department</th>
                     <th>Quantity</th>
                     <th>Processed</th>
                     <th>Discrepencies</th>
@@ -37,6 +38,7 @@
                         <td>{{ item.product.name }}</td>
                         <td>{{ item.product.size }} {{ item.product.fitting }}</td>
                         <td>{{ item.product.colour }}</td>
+                        <td>{{ item.product.department }}</td>
                         <td>{{ item.quantity }}</td>
                         <td>{{ item.processed }}</td>
                         {% if item.added == True %}

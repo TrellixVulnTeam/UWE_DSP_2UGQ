@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:http/http.dart' as http;
 
-import 'model/Product.dart';
 import 'model/Query.dart';
 import 'model/Order.dart';
 
@@ -20,7 +19,7 @@ class ProcessDelivery extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Restocking App',
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
@@ -80,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
         orderItem.add(item);
       }      
     }
-
+    
     return orderItem;
   }
 

@@ -2,6 +2,8 @@ from django.db import models
 
 # Create your models here.
 
+import datetime
+
 from django.db import models
 from djchoices import ChoiceItem, DjangoChoices
 import django.core.validators as validator
@@ -86,8 +88,8 @@ class Order(models.Model):
 class OrderItem(models.Model):
     quantity = models.IntegerField(default=1, validators=[validator.MinValueValidator(1, "There is a value that is less than 0")])
     processed = models.IntegerField(default=0, validators=[validator.MinValueValidator(0, "There is a value that is less than 0")])
-    product = models.ForeignKey('Product', related_name='product', on_delete=models.CASCADE)
-    order = models.ForeignKey('Order', related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    order = models.ForeignKey('Order', related_name='order_items', on_delete=models.CASCADE)
     added = models.BooleanField(default=False)
 
     def __str__(self):
@@ -96,21 +98,36 @@ class OrderItem(models.Model):
 class User(models.Model):
     password = models.CharField(max_length=12)
 
+    def __str__(self):
+        return str(self.id)
+
 class Transaction(models.Model):
-    transaction_date = models.DateField(auto_now=True)
-    transaction_time = models.TimeField(auto_now=True)
+    date = models.DateField(auto_now=True)
+    time = models.TimeField(auto_now=True)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
+    def __str__(self):
+        return '(' + str(self.id) + ') (' + str(self.date) + ') (' + str(self.time.strftime('%H:%M:%S')) +')'
 
 class TransactionItem(models.Model):
     quantity = models.IntegerField(default=1, validators=[validator.MinValueValidator(1, "There is a value that is less than 1")])
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
     transaction = models.ForeignKey('Transaction', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.transaction.id) + ' ' + str(self.product) + ' (' + str(self.quantity) + ')'
+
 class RestockingList(models.Model):
-    restocking_list_date = models.DateField(auto_now=True)
-    restocking_list_time = models.TimeField(auto_now=True)
+    date = models.DateField(auto_now=True)
+    time = models.TimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.date) + ' ' + str(self.time.strftime('%H:%M:%S'))
 
 class RestockingListItem(models.Model):
     quantity = models.IntegerField(default=1, validators=[validator.MinValueValidator(1, "There is a value that is less than 1")])
+    processed = models.IntegerField(default=0, validators=[validator.MinValueValidator(0, "There is a value that is less than 0")])
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
-    restocking_list = models.ForeignKey('RestockingList', on_delete=models.CASCADE)
+    added = models.BooleanField(default=False)
+    restocking_list = models.ForeignKey('RestockingList', related_name='restocking_items', on_delete=models.CASCADE)
+
+

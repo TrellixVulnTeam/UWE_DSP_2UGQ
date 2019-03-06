@@ -119,6 +119,8 @@ USE_TZ = True
 
 DATE_INPUT_FORMATS = ['%Y-%m-%d']
 
+TIME_INPUT_FORMAT = ['H-i-s']
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
@@ -132,4 +134,4 @@ EMAIL_HOST_USER = open(os.getcwd() + '/dsp/email_user.txt', 'r').read()
 
 EMAIL_HOST_PASSWORD = open(os.getcwd() + '/dsp/email_pass.txt', 'r').read()
 
-EMAIL_USE_TLS   = True
+EMAIL_USE_TLS = True

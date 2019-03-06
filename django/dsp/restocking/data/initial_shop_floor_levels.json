@@ -1,0 +1,604 @@
+{
+    "department":{
+        "mens":{
+            "size_data":{
+                "common":[
+                    8,
+                    8.5, 
+                    9,
+                    9.5,
+                    10,
+                    10.5,
+                    11
+                ]
+            },
+            "code":{
+                "a":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 2
+                        },
+                        "uncommon":{
+                            "half": 2,
+                            "whole": 3
+                        }
+                    }
+                },
+                "b":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "c":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "d":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "e":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 2
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "f":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "g":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "h":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "i":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "j":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "k":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "l":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "m":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "n":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "o":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "p":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "r":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "w":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "x":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                }        
+            }
+        },
+        "ladies":{
+            "size_data":{
+                "common":[
+                    5,
+                    5.5, 
+                    6,
+                    6.5
+                ]
+            },
+            "code":{
+                "a":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "b":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 2
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "c":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "d":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "f":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "g":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 2
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "h":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "j":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "k":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "l":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "m":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "n":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "o":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "p":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "r":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "s":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "u":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "v":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "x":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                }        
+            }
+        },
+        "childrens":{
+            "size_data":{
+                "common":[
+                    0
+                ]
+            },
+            "code":{
+                "j":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "k":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                }, 
+                "l":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "m":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                }, 
+                "n":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "o":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "p":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "q":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                },
+                "w":{
+                    "size":{
+                        "common":{
+                            "half": 1,
+                            "whole": 1
+                        },
+                        "uncommon":{
+                            "half": 1,
+                            "whole": 1
+                        }
+                    }
+                }   
+            }
+        }
+    }
+}

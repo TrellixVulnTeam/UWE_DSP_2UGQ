@@ -1,11 +1,12 @@
 """
 Contains views relating to the rest part of the project.
 """
+from datetime import datetime
 
 from rest_framework import generics
-from restocking.serializers import ProductSerializer, OrderSerializer,  OrderItemSerializer
-from restocking.models import Product, Order, OrderItem
-
+from restocking.serializers import ProductSerializer, OrderSerializer, OrderItemSerializer, RestockingListSerializer, RestockingListItemSerializer
+from restocking.models import Product, Order, OrderItem, RestockingList, RestockingListItem
+from django.core.exceptions import ObjectDoesNotExist
 
 class DetailsViewOrder(generics.RetrieveUpdateAPIView):
     """Handles GET, PUT and DELETE for orders"""
@@ -34,7 +35,7 @@ class DetailsViewOrderByDateFilterProduct(generics.RetrieveUpdateAPIView):
         if product is not None:
             try:
                 query = Order.objects.filter(
-                    delivery_date__exact=delivery_date, 
+                    delivery_date__exact=delivery_date,
                     id__exact=OrderItem.objects.get(product__exact=product).order.id
                 )
             except Exception as exception:
@@ -66,3 +67,25 @@ class DetailsViewProduct(generics.RetrieveUpdateAPIView):
 
     def get_queryset(self):
         return Product.objects.all()
+
+class DetailsViewRestocking(generics.RetrieveUpdateAPIView):
+    """Handles GET, PUT and DELETE for products"""
+    serializer_class = RestockingListSerializer
+
+    def get_queryset(self):
+        return RestockingList.objects.all()
+class DetailsViewRestockingByTime(generics.RetrieveUpdateAPIView):
+    """Handles GET, PUT and DELETE for products"""
+    serializer_class = RestockingListSerializer
+    lookup_field = 'date'
+
+    def get_queryset(self):
+        try:
+            time = self.kwargs['time']
+            time = time.split('-')
+            print(RestockingList.objects.get(time__hour=time[0], time__minute=time[1]).time)
+            return RestockingList.objects.filter(time__hour=time[0], time__minute=time[1])
+        except ObjectDoesNotExist as exception:
+            return None
+        except Exception as exception:
+            raise exception

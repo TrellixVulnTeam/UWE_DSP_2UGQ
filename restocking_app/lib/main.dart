@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'OrderQueryForm.dart';
+import 'RestockingQueryForm.dart';
 
 void main() => runApp(MyMain());
 
@@ -46,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: TabBarView(
           children: <Widget>[
             OrderQueryForm.orderQueryForm(context),
-            Icon(Icons.access_alarm),
+            RestockingQueryForm.restockingQueryForm(context),
             Icon(Icons.access_alarms),
           ],
         )
