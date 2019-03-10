@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (context, snapshot){
             if (snapshot.hasData) {
               _order = snapshot.data;
-              return buildList(createDeliveryList(snapshot.data));
+              return buildList(createDeliveryList(_order));
             }else if (snapshot.hasError){
               return Text(snapshot.error);
             }
@@ -194,9 +194,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   updateOrderItem(OrderItem orderItem) async{
+    print(Serializers.deserialiseOrderItemUpdate(orderItem.orderItemId, orderItem.processed + 1).toString());
     http.Response response = await MakeRequest.patchRequest(
       Query(model: 'order', query:'${_order.orderId}/?format=json'), 
-      Serializers.deserialiseOrderItemUpdate(orderItem.orderItemId, orderItem.processed + 1)
+      Serializers.deserialiseOrderItemUpdate(orderItem.orderItemId, orderItem.processed + 1),
       );
 
     if (response.statusCode == 200) {

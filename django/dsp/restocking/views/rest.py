@@ -31,7 +31,7 @@ class DetailsViewOrderByDateFilterProduct(generics.RetrieveUpdateAPIView):
 
     def get_queryset(self):
         delivery_date = self.kwargs['delivery_date']
-        product = self.kwargs['product_id']
+        product = self.kwargs['product']
         if product is not None:
             try:
                 query = Order.objects.filter(
@@ -83,9 +83,34 @@ class DetailsViewRestockingByTime(generics.RetrieveUpdateAPIView):
         try:
             time = self.kwargs['time']
             time = time.split('-')
-            print(RestockingList.objects.get(time__hour=time[0], time__minute=time[1]).time)
             return RestockingList.objects.filter(time__hour=time[0], time__minute=time[1])
         except ObjectDoesNotExist as exception:
             return None
         except Exception as exception:
             raise exception
+
+class DetailsViewRestockingByTimeFilterProduct(generics.RetrieveUpdateAPIView):
+    """Handles GET, PUT and DELETE for products by date and by product id
+    Used to check the presence of a product in a restocking list.
+    """
+    serializer_class = RestockingListSerializer
+    lookup_field = 'date'
+
+    def get_queryset(self):
+        time = self.kwargs['time']
+        time = time.split('-')
+        product = self.kwargs['product']
+        if product is not None:
+            try:
+                query = RestockingList.objects.filter(
+                    time__hour=time[0],
+                    time__minute=time[1],
+                    id__exact=RestockingListItem.objects.get(product__exact=product).restocking_list.id
+                )
+            except Exception as exception:
+                if exception == 'RestockingListItem matching query does not exist.':
+                    return None
+                else:
+                    raise exception
+
+            return query

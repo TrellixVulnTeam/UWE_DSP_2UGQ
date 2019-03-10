@@ -38,6 +38,7 @@ class MakeRequest{
   }
 
   static Future<http.Response> patchRequest(Query query, String data) async{
+    print(data);
     final response = await http.patch(
       '$conn/${query.model}/${query.query}',
       body: data,

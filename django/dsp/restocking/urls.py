@@ -22,15 +22,17 @@ urlpatterns = [
 
     #Rest
     #Order
-    path('rest/order/<int:pk>', views.DetailsViewOrder.as_view(), name='details_order_date'),
-    path('rest/order/<slug:delivery_date>/', views.DetailsViewOrderByDate.as_view(), name='details_order_date_by_product'),
+    path('rest/order/<int:pk>/', views.DetailsViewOrder.as_view(), name='details_order_date'),
+    path('rest/order/<slug:delivery_date>', views.DetailsViewOrderByDate.as_view(), name='details_order_date'),
+    path('rest/order/<slug:delivery_date>/<int:product>', views.DetailsViewOrderByDateFilterProduct.as_view(), name='details_order_date_filter_product'),
     #OrderItem
     path('rest/order_item/create', views.CreateOrderItemView.as_view(), name='create_order_item'),
     #Product
-    path('rest/product/<int:pk>', views.DetailsViewProduct.as_view(), name='details_product'),
+    path('rest/product/<int:pk>/', views.DetailsViewProduct.as_view(), name='details_product'),
     #RestockingList
-    path('rest/restocking/<int:pk>', views.DetailsViewRestocking.as_view(), name='details_restocking'),
+    path('rest/restocking/<int:pk>/', views.DetailsViewRestocking.as_view(), name='details_restocking'),
     path('rest/restocking/<slug:date>/<slug:time>', views.DetailsViewRestockingByTime.as_view(), name='details_restocking_time'),
+    path('rest/restocking/<slug:date>/<slug:time>/<int:product>', views.DetailsViewRestockingByTimeFilterProduct.as_view(), name='details_restocking_time_filter_product'),
 
     #Forbidden Functions - Do not enable these unless you know what you're doing
     #path('forbidden/add_quantities', views.add_quantities, name='add_quantities'),

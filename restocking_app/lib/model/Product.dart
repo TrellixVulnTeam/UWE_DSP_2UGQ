@@ -10,6 +10,20 @@ class Product{
   final String productCode;
   final String department;
   final int stockQuantity;
+  final int floorQuantity;
 
-  Product({this.productId, this.name, this.size, this.colour, this.fitting, this.price, this.sale, this.productType, this.productCode, this.department, this.stockQuantity});
+  Product({
+    this.productId, 
+    this.name, 
+    this.size, 
+    this.colour, 
+    this.fitting, 
+    this.price, 
+    this.sale, 
+    this.productType, 
+    this.productCode, 
+    this.department, 
+    this.stockQuantity,
+    this.floorQuantity
+    });
 }

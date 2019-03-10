@@ -8,8 +8,8 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'size', 'colour', 'fitting', 'price', 'sale', 'product_type', 'product_code', 'department', 'stock_quantity')
-        read_only_fields = ('name', 'size', 'colour', 'fitting', 'price', 'sale', 'product_type', 'product_code', 'department', 'stock_quantity')
+        fields = ('id', 'name', 'size', 'colour', 'fitting', 'price', 'sale', 'product_type', 'product_code', 'department', 'stock_quantity', 'floor_quantity')
+        read_only_fields = ('name', 'size', 'colour', 'fitting', 'price', 'sale', 'product_type', 'product_code', 'department')
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
@@ -32,8 +32,9 @@ class OrderSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'order_processed', 'order_delivered', 'delivery_date', 'delivery_processed')
 
     def update(self, instance, validated_data):
-        order_items = validated_data.get('order_items')
-        for item in order_items:
+        print(validated_data)
+        items = validated_data.get('order_items')
+        for item in items:
             item_id = item.get('id', None)
             order_item = OrderItem.objects.get(id__exact=item_id)
             order_item.processed = item.get('processed', order_item.processed)
@@ -63,7 +64,7 @@ class RestockingListSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'date', 'time')
 
     def update(self, instance, validated_data):
-        restocking_list_items = validated_data.get('restocking_list_items')
+        restocking_list_items = validated_data.get('restocking_items')
         for item in restocking_list_items:
             item_id = item.get('id', None)
             restocking_list_item = RestockingListItem.objects.get(id__exact=item_id)

@@ -4,7 +4,7 @@ class RestockingList{
   final int restockingListId;
   final String date;
   final String time;
-  final List<RestockingListItem> restockingListItems;
+  List<RestockingListItem> restockingListItems;
 
   RestockingList({
     this.restockingListId,

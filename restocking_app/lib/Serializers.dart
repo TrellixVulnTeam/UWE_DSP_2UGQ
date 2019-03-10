@@ -25,7 +25,8 @@ class Serializers {
           productType: item['product']['product_type'],
           productCode: item['product']['product_code'],
           department: item['product']['department'],
-          stockQuantity: item['product']['stock_quantity']
+          stockQuantity: item['product']['stock_quantity'],
+          floorQuantity: item['product']['floor_quantity']
         ),
       ));
     }
@@ -56,7 +57,8 @@ class Serializers {
       productType: data['product_type'],
       productCode: data['product_code'],
       department: data['department'],
-      stockQuantity: data['stock_quantity']
+      stockQuantity: data['stock_quantity'],
+      floorQuantity: data['floor_quantity']
     );
   }
 
@@ -81,7 +83,8 @@ class Serializers {
           productType: item['product']['product_type'],
           productCode: item['product']['product_code'],
           department: item['product']['department'],
-          stockQuantity: item['product']['stock_quantity']
+          stockQuantity: item['product']['stock_quantity'],
+          floorQuantity: item['product']['floor_quantity']
         )
       ));
     }
@@ -94,11 +97,11 @@ class Serializers {
     );
   }
 
-  static String deserialiseOrderItemUpdate(int orderItemid, int processed){
+  static String deserialiseOrderItemUpdate(int itemId, int processed){ 
     var jsonMap = {
-      "items": [
+      "order_items": [
         {
-          "id": orderItemid,
+          "id": itemId,
           "processed":processed,
         }
       ]
@@ -124,5 +127,50 @@ class Serializers {
       quantity: 1,
       processed: 1
     );
+  }
+
+  static String deserialiseRestockingListItemUpdate(int itemId, int processed, int productId, int restockingListId){ 
+    var jsonMap = {
+      "restocking_items":[
+        {
+          "id":itemId,
+          "processed":processed,
+          "product":{
+            "id":productId
+          },
+          "restocking_list":restockingListId
+        }
+      ]
+    };
+    return jsonEncode(jsonMap);
+  }
+
+  static String deserialiseRestockingListItemCreate(int productId, int restockingListId){
+    var jsonMap = {
+      "restocking_list": restockingListId,
+      "quantity" : 1,
+      "processed" : 1,
+      "product" : {
+        "id" : productId
+      }
+    };
+    return jsonEncode(jsonMap);
+  }
+
+  static RestockingListItem restockingListItemSerializer(int productId){
+    return RestockingListItem(
+      product: Product(productId: productId),
+      quantity: 1,
+      processed: 1
+    );
+  }
+
+  static String deserialiseProductUpdate(int productId, int stockQuantity, int floorQuantity){
+    var jsonMap = {
+      "id": productId,
+      "stock_quantity": stockQuantity,
+      "floor_quantity": floorQuantity 
+    };
+    return jsonEncode(jsonMap);
   }
 }

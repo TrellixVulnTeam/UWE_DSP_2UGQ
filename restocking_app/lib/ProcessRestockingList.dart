@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:http/http.dart' as http;
 
 import 'model/Query.dart';
 import 'model/RestockingList.dart';
 
+import 'Serializers.dart';
+
 import 'utilities/MakeRequest.dart';
-import 'utilities/ListCreation.dart';
+import 'utilities/ListSorter.dart';
+import 'utilities/ProductCodeResolver.dart';
+import 'utilities/ColourResolver.dart';
+import 'utilities/Scan.dart';
+import 'utilities/Toast.dart';
 
 class ProcessRestockingList extends StatelessWidget{
   final Query query;
@@ -44,6 +50,27 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar:AppBar(
         title: Text(widget.title),
+        actions: <Widget>[
+          PopupMenuButton(
+            icon: Icon(MdiIcons.filter),
+            itemBuilder: (_) => <PopupMenuItem<String>>[
+              new PopupMenuItem<String>(
+                child: const Text('Filter by Name'), value: 'name'),
+              new PopupMenuItem<String>(
+                child: const Text('Filter by Department (Childrens)'), value: 'childrens'),
+              new PopupMenuItem<String>(
+                child: const Text('Filter by Department (Ladies)'), value: 'ladies'),
+              new PopupMenuItem<String>(
+                child: const Text('Filter by Department (Mens)'), value: 'mens'),
+              new PopupMenuItem<String>(
+                child: const Text('Filter by Size'), value: 'size'),
+            ],
+            onSelected: (String result){
+              ListSorter.sortRestockingList(_restockingList, result);
+              setState((){});
+            },
+          )
+        ]
       ),
       body:Center(
         child:FutureBuilder<RestockingList>(
@@ -51,14 +78,18 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (context, snapshot){
             if(snapshot.hasData){
               _restockingList = snapshot.data;
-              return buildList(createRestockingList(snapshot.data));
+              return buildList(createRestockingList(_restockingList));
             }else if(snapshot.hasError){
               return Text(snapshot.error);
             }
             return CircularProgressIndicator();
           }
         )
-      )
+      ),
+      floatingActionButton: FloatingActionButton(
+        child:Icon(MdiIcons.qrcodeScan),
+        onPressed: ()async{processScan(await Scan.scan());}
+      ),
     );
   }
 
@@ -71,6 +102,10 @@ class _MyHomePageState extends State<MyHomePage> {
       }      
     }
     
+    if(restockingListItems.isEmpty){
+      print('Restocking List Is Empty');
+    }
+
     return restockingListItems;
   }
 
@@ -83,8 +118,18 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ListTile(
+                leading: Icon(
+                  ProductCodeResolver.productCodeResolver(restockingList[index].product.productCode),
+                  color: ColorResolver.colorResolver(restockingList[index].product.colour)
+                  ),
                 title: Text(restockingList[index].product.name),
                 subtitle: Text('Size ${restockingList[index].product.size} ${restockingList[index].product.fitting} in ${restockingList[index].product.colour}'),
+                trailing:IconButton(
+                  icon: Icon(MdiIcons.delete),
+                  onPressed: (){
+                    updateRestockingListItem(restockingList[index]);
+                  },
+                ) 
               )
             ],
           )
@@ -92,4 +137,140 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
   }
+
+  processScan(String productId) async{
+    //TODO implement cancel
+    //check if the product is a real product that exists.
+    http.Response response = await MakeRequest.getRequest(Query(model: 'product', query: '$productId'));
+    if (response.statusCode == 404){//product is not in the database.
+      MyToast.showLongToast('Product not recognised');
+    }else{
+      //check if order is actually on the restocking list
+      response = await MakeRequest.getRequest(Query(model: 'restocking', query: '${_restockingList.date}/${_restockingList.time}/$productId'));
+      if (response.statusCode == 200) {//Product is in the list, and we can process the order.
+        //also need to check if the product should be deductable ie - it's in the product list.
+        for (var item in _restockingList.restockingListItems) {
+          if (item.product.productId == int.parse(productId)){
+            if (item.quantity - item.processed <=0) {
+              //You shouldn't be scanning this product, but you can add another if you like!
+              showDialog(
+                context: context,
+                builder: (BuildContext context){        
+                  return AlertDialog(
+                    title: Text('Order Discrepency'),
+                    content: Text('Product ${item.product.name} size ${item.product.size} ${item.product.fitting} in ${item.product.colour} is on the delivery, but has already been processed ${item.processed}/${item.quantity} times. Do you want to add another?'),
+                    actions: <Widget>[
+                      new FlatButton(
+                        child:Text('Cancel'),
+                        onPressed: (){
+                          Navigator.of(context).pop();
+                          MyToast.showLongToast('${item.product.name} not added to order.');
+                        },
+                      ),
+                      new RaisedButton(
+                        textColor: Colors.white,
+                        child:Text('Confirm'),
+                        onPressed: (){
+                          updateRestockingListItem(item);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                });
+            }else{
+              //Product is fine to add to order.
+              updateRestockingListItem(item);
+            }
+          }
+        }
+      }else if(response.statusCode == 404){//Product is not in the list, but we can add it!.
+        RestockingListItem newRestockingListItem = Serializers.restockingListItemSerializer(int.parse(productId));
+        showDialog(
+          context: context,
+          builder: (BuildContext context){        
+            return AlertDialog(
+              title: Text('Restocking List Discrepency'),
+              content: Text('Product ${newRestockingListItem.product.productId} is not on the restocking list. Do you want to add it?'),
+              actions: <Widget>[
+                new FlatButton(
+                  child:Text('Cancel'),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                    MyToast.showLongToast('Product not added to Restocking List.');
+                  },
+                ),
+                new RaisedButton(
+                  textColor: Colors.white,
+                  child:Text('Confirm'),
+                  onPressed: (){
+                    addRestockingListItem(newRestockingListItem);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+      }else{
+        MyToast.showLongToast('Problem scanning stock: ${response.statusCode}');//most likely. 
+      }
+    }
+  }
+
+  updateRestockingListItem(RestockingListItem restockingListItem) async{
+    //update restocking list
+    http.Response response = await MakeRequest.patchRequest(
+      Query(model: 'restocking', query:'${_restockingList.restockingListId}/?format=json'), 
+      Serializers.deserialiseRestockingListItemUpdate(
+          restockingListItem.restockingListItemId,
+          restockingListItem.processed + 1, 
+          restockingListItem.product.productId,
+          _restockingList.restockingListId
+        )
+    );
+
+    if (response.statusCode == 200) {
+      response = await MakeRequest.patchRequest(
+      Query(model: 'product', query:'${restockingListItem.product.productId}/?format=json'), 
+      Serializers.deserialiseProductUpdate(
+        restockingListItem.product.productId,
+        restockingListItem.product.stockQuantity - 1,
+        restockingListItem.product.stockQuantity + 1,
+        )
+      );
+      if(response.statusCode == 200){
+        MyToast.showLongToast('Scanned ${restockingListItem.product.name}');
+        setState((){});//update state
+      }else{
+        MyToast.showLongToast('Could not update stock');
+        //reverse our terrible decisions
+        http.Response response = await MakeRequest.patchRequest(
+        Query(model: 'restocking', query:'${_restockingList.restockingListId}/?format=json'), 
+        Serializers.deserialiseRestockingListItemUpdate(
+          restockingListItem.restockingListItemId,
+          restockingListItem.processed - 1, 
+          restockingListItem.product.productId,
+          _restockingList.restockingListId
+          )        
+        );
+      }
+    }else{
+      MyToast.showLongToast('Could not update stock: ${response.statusCode}');
+    }
+  }
+
+  addRestockingListItem(RestockingListItem restockingListItem) async{
+    http.Response response =  await MakeRequest.postRequest(
+      Query(model: 'order_item', query: 'create'), 
+      Serializers.deserialiseOrderItemCreate(restockingListItem.product.productId, _restockingList.restockingListId)
+      );
+
+    if (response.statusCode == 201) {
+      MyToast.showLongToast('Scanned ${restockingListItem.product.name}');
+      setState((){});//update state
+    }else{
+      MyToast.showLongToast('Could not update stock: ${response.statusCode}');
+    }
+  }
+
 }
