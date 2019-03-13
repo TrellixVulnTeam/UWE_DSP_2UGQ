@@ -8,6 +8,7 @@ from django.views import generic
 from django.core.mail import send_mail
 
 from restocking.models import Order, OrderItem, Product
+from restocking.processing import OrderProcessing
 
 class ManagerIndexView(generic.ListView):
     """
@@ -70,3 +71,13 @@ def process_delivery(request, delivery_date):
     ))
 
     return redirect('/restocking/manager')
+
+class CreateOrder(generic.ListView):
+    """
+    Shows a generated order from transactions.
+    """
+    template_name = 'manager/show_order.html'
+    context_object_name = 'order'
+
+    def get_queryset(self):
+        return OrderProcessing().create_order()

@@ -19,6 +19,7 @@ urlpatterns = [
     path('manager/deliveries', views.AskProcessDelivery.as_view(), name='ask_process_delivery'),
     path('manager/deliveries/<slug:delivery>', views.ResultsProcessDelivery.as_view(), name='results_process_delivery'),
     path('manager/deliveries/process/<slug:delivery_date>', views.process_delivery, name='process_delivery'),
+    path('manager/orders/create', views.CreateOrder.as_view(), name='create_order'),
 
     #Rest
     #Order

@@ -45,16 +45,19 @@ def create_transaction(request, quantity):
 
     Adapted from test.
     """
+    
 
     products = list(Product.objects.all())
     transaction_items = []
     transactions = []
+    limit = quantity
 
     for i in range(quantity):
         transaction = Transaction(user=User.objects.get(id=1))
         transaction.save()
         transactions.append(transaction)
-        for j in range(random.randint(1, 3)):
+        rnd_number_products = random.randint(1, 3)
+        for j in range(rnd_number_products):
             products = list(Product.objects.filter(floor_quantity__gt=0))
             rnd_quantity = 1
             rnd_product = random.randrange(0, len(products))
@@ -65,6 +68,12 @@ def create_transaction(request, quantity):
                 product=products[rnd_product],
                 transaction=transaction,
             ))
+            limit -= rnd_quantity
+            if limit <= 0:
+                break
+        if limit <= 0:
+            break
+
 
     for item in transaction_items:
         item.save()

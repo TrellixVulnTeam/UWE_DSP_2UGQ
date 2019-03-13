@@ -1,6 +1,6 @@
-from restocking.models import Product, RestockingListItem, Transaction, TransactionItem, RestockingList
+from restocking.models import Product, RestockingListItem, Transaction, TransactionItem, RestockingList, Order, OrderItem
 
-from datetime import datetime
+import django.utils.timezone as timezone
 
 class RecommendProcessing():
     """
@@ -180,7 +180,11 @@ class RecommendProcessing():
         ).exclude(id=item.product.id)
 
     def recommend(self, item):
-        item = RestockingListItem.objects.get(id=item)
+        if item.product is not None:
+            print('isItem')
+            print(item.id)
+        else:
+            item = RestockingListItem.objects.get(id=item)
         candidates = self.check(item)
         if not candidates:
             #print('check_ignore_fitting')
@@ -234,23 +238,26 @@ class RecommendProcessing():
                                                                             #print('check_ignore_size')
                                                                             candidates = self.check_ignore_size(item)
 
-        return candidates
+        return candidates        
 
 class RestockingListProcessing:
     def create_restocking_list(self):
         restocking_list = RestockingList.objects.latest('id')
         transaction_items = []
 
-        print(restocking_list.time)
-        print(datetime.now())
+        print(timezone.now())
+        print(restocking_list.datetime)
 
         for i in Transaction.objects.filter(
-                time__lt=datetime.now(),
-                time__gt=restocking_list.time,
-                date=restocking_list.date
+                datetime__lt=timezone.now(),
+                datetime__gt=restocking_list.datetime
         ).iterator():
             transaction_items.append(TransactionItem.objects.filter(transaction=i))
 
+        print(transaction_items)
+
+
+        current_list = RestockingList.objects.create()
         #Create a list of transaction items that will fall within the restocking list
         restocking_list_items = transaction_items[0]
         transaction_items.pop(0)
@@ -262,14 +269,40 @@ class RestockingListProcessing:
                 RestockingListItem.objects.create(
                     quantity=item.quantity,
                     product=item.product,
-                    restocking_list=restocking_list
+                    restocking_list=current_list
                 )
             else:
                 print('had to go with a recommended product')
-                recommended = list(RecommendProcessing().recommend(item))[0]
+                recommended = list(RecommendProcessing().recommend(RestockingListItem(product=item.product)))[0]
+                print(recommended)
                 RestockingListItem.objects.create(
-                    quantity=recommended.quantity,
-                    product=recommended.product,
-                    restocking_list=restocking_list
+                    quantity=item.quantity,
+                    product=recommended,
+                    restocking_list=current_list
                 )
     
+class OrderProcessing:
+    def create_order(self):
+        transaction_items = []
+
+        for i in Transaction.objects.filter(
+            date=timezone.now().date()
+        ).iterator():
+            transaction_items.append(TransactionItem.objects.filter(transaction=i))
+
+        #Create a list of transaction items that will fall within the restocking list
+        order_items = transaction_items[0]
+        transaction_items.pop(0)
+        for i in transaction_items:
+            order_items = order_items | i
+        order = Order()
+        order.save()
+
+        for item in list(order_items):
+            OrderItem.objects.create(
+                product=item.product,
+                quantity=item.quantity,
+                order=order
+            )
+
+        return OrderItem.objects.filter(order=order)

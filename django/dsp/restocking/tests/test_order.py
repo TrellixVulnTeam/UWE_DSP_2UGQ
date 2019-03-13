@@ -8,6 +8,7 @@ import json
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from restocking.models import *
+import django.utils.timezone as timezone
 
 class TestOrder(TestCase):
     """
@@ -80,7 +81,65 @@ class TestOrder(TestCase):
                                     department=department
                                 )
 
-    def test_create_order_of_100(self):
+        path = os.getcwd()
+        with open(path + '\\restocking\\data\\initial_product_levels.json') as data_file:
+            quantity_data = json.load(data_file)
+
+        product_set = Product.objects.all()
+
+        for product in product_set:
+            if product.size in quantity_data['department'][product.department]['size_data']['common']:
+                size_category = 'common'
+            else:
+                size_category = 'uncommon'
+
+            if '.5' in str(product.size):
+                size_half = 'half'
+            else:
+                size_half = 'whole'
+
+            quantity = quantity_data['department'][product.department]['code'][product.product_code]['size'][size_category][size_half]
+            product.stock_quantity = quantity + random.randint((round(quantity/2) * -1), (round(quantity/2)))
+            product.save()
+        
+        transaction_items = []
+        transactions = []
+
+        user = User(password='1234')
+        user.save()
+
+        for i in range(600):
+            products = list(Product.objects.filter(stock_quantity__gt=0))
+            transaction = Transaction(user=user)
+            transaction.save()
+            transactions.append(transaction)
+            for j in range(random.randint(1, 3)):
+                rnd_quantity = random.randint(1, 3)
+                rnd_product = random.randrange(0, len(products))
+                #print(products[rnd_product].stock_quantity)
+                while rnd_quantity > products[rnd_product].stock_quantity:
+                    rnd_quantity = random.randint(1, 3)
+                products[rnd_product].stock_quantity -= rnd_quantity
+                sales = ProductSales.objects.get_or_create(
+                    product=products[rnd_product],
+                    date=timezone.now(),
+                    defaults={'quantity': 0}
+                )[0]
+                sales.quantity = sales.quantity + rnd_quantity
+                sales.save()
+                #print('\t ' + str(products[rnd_product].stock_quantity) + ' ' + str(sales.quantity))
+                transaction_items.append(TransactionItem(
+                    quantity=rnd_quantity,
+                    product=products[rnd_product],
+                    transaction=transaction,
+                ))
+
+
+        for item in transaction_items:
+            print(item)
+            item.save()
+
+    def silencetest_create_order_of_100(self):
         """
         Test to create an order of 100 items
         """
@@ -103,7 +162,7 @@ class TestOrder(TestCase):
 
         self.assertEqual(len(order_items), 100)
 
-    def test_create_order_of_3000(self):
+    def silencetest_create_order_of_3000(self):
         """
         Test to create an order of 3000 items
         """
@@ -125,4 +184,32 @@ class TestOrder(TestCase):
             item.save()
 
         self.assertEqual(len(order_items), 3000)
-        
+
+    def test_create_order_smart(self):
+        """
+        Test to create an order from the products sold
+        """
+        transaction_items = []
+
+        for i in Transaction.objects.filter(
+            date=timezone.now().date()
+        ).iterator():
+            transaction_items.append(TransactionItem.objects.filter(transaction=i))
+
+        #Create a list of transaction items that will fall within the restocking list
+        order_items = transaction_items[0]
+        transaction_items.pop(0)
+        for i in transaction_items:
+            order_items = order_items | i
+        order = Order()
+        order.save()
+
+        for item in list(order_items):
+            OrderItem.objects.create(
+                product=item.product,
+                quantity=item.quantity,
+                order=order
+            )
+
+        for item in OrderItem.objects.filter(order=order).iterator():
+            print(item)

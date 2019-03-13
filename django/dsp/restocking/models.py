@@ -104,6 +104,7 @@ class User(models.Model):
 class Transaction(models.Model):
     date = models.DateField(auto_now=True)
     time = models.TimeField(auto_now=True)
+    datetime = models.DateTimeField(auto_now=True)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     def __str__(self):
         return '(' + str(self.id) + ') (' + str(self.date) + ') (' + str(self.time.strftime('%H:%M:%S')) +')'
@@ -119,6 +120,7 @@ class TransactionItem(models.Model):
 class RestockingList(models.Model):
     date = models.DateField(auto_now=True)
     time = models.TimeField(auto_now=True)
+    datetime = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return str(self.date) + ' ' + str(self.time.strftime('%H:%M:%S'))
@@ -130,7 +132,11 @@ class RestockingListItem(models.Model):
     added = models.BooleanField(default=False)
     restocking_list = models.ForeignKey('RestockingList', related_name='restocking_items', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.restocking_list.id) + ' ' + str(self.product) + ' (' + str(self.quantity) + ')'
+
+
 class ProductSales(models.Model):
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
-    date = models.DateField(default=datetime.now)
+    date = models.DateField(auto_now=True)
     quantity = models.IntegerField(default=0, validators=[validator.MinValueValidator(1, "There is a value that is less than 0")])

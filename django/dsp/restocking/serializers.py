@@ -60,8 +60,8 @@ class RestockingListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RestockingList
-        fields = ('id', 'date', 'time', 'restocking_items')
-        read_only_fields = ('id', 'date', 'time')
+        fields = ('id', 'date', 'time', 'restocking_items', 'datetime')
+        read_only_fields = ('id', 'date', 'time', 'datetime')
 
     def update(self, instance, validated_data):
         restocking_list_items = validated_data.get('restocking_items')
