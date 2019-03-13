@@ -42,6 +42,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final Query query;
   RestockingList _restockingList;
+  String _filter;
 
   _MyHomePageState({@required this.query});
 
@@ -66,8 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: const Text('Filter by Size'), value: 'size'),
             ],
             onSelected: (String result){
-              ListSorter.sortRestockingList(_restockingList, result);
-              setState((){});
+              setState((){_filter=result;});
             },
           )
         ]
@@ -78,6 +78,9 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (context, snapshot){
             if(snapshot.hasData){
               _restockingList = snapshot.data;
+              if (_filter != null) {
+                ListSorter.sortRestockingList(_restockingList, _filter);
+              }
               return buildList(createRestockingList(_restockingList));
             }else if(snapshot.hasError){
               return Text(snapshot.error);
@@ -124,12 +127,23 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 title: Text(restockingList[index].product.name),
                 subtitle: Text('Size ${restockingList[index].product.size} ${restockingList[index].product.fitting} in ${restockingList[index].product.colour}'),
-                trailing:IconButton(
-                  icon: Icon(MdiIcons.delete),
-                  onPressed: (){
-                    updateRestockingListItem(restockingList[index]);
-                  },
-                ) 
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(MdiIcons.exclamation),
+                      onPressed: (){
+                        recommendProducts(restockingList[index]);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(MdiIcons.check),
+                      onPressed: (){
+                        updateRestockingListItem(restockingList[index]);
+                      },
+                    )
+                  ],
+                )
               )
             ],
           )
@@ -269,8 +283,100 @@ class _MyHomePageState extends State<MyHomePage> {
       MyToast.showLongToast('Scanned ${restockingListItem.product.name}');
       setState((){});//update state
     }else{
-      MyToast.showLongToast('Could not update stock: ${response.statusCode}');
+      MyToast.showLongToast('Could not add stock: ${response.statusCode}');
     }
   }
 
+  recommendProducts(RestockingListItem restockingListItem) async{
+    RestockingList _products;
+    showDialog(
+      context: context,
+      builder: (BuildContext context){    
+        return AlertDialog(
+          title: Text('Product Not In Stock'),
+          content: Column(
+            children: <Widget>[
+              Text('${restockingListItem.product.name} has not been found. Please pull one of the products below.'),
+              Container(
+                padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                height: 300,
+                width: 300,
+                child:FutureBuilder<RestockingList>(
+                  future:MakeRequest.recommendProduct(Query(model: 'recommend', query: restockingListItem.restockingListItemId.toString())),
+                  builder: (context, snapshot){
+                  if(snapshot.hasData){
+                    _products = snapshot.data;
+                    return buildRecommendList(createRecommendList(_products));
+                  }else if(snapshot.hasError){
+                    return Text(snapshot.error);
+                  }
+                  return CircularProgressIndicator();
+                  }
+                ) 
+              )       
+            ],
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child:Text('Cancel'),
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            ),
+            new RaisedButton(
+              textColor: Colors.white,
+              child:Text('Remove Product From List'),
+              onPressed: (){
+                MakeRequest.basicRequest(Query(model: 'recommend', query: 'remove/${restockingListItem.restockingListItemId}'));
+                setState(() {});
+                Navigator.of(context).pop();
+                MyToast.showLongToast('Please scan recommended product.');
+              },
+            ),
+          ],
+        );
+      }
+    );   
+  }
+ListView buildRecommendList(List<RestockingListItem> restockingList){
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: restockingList.length,
+      itemBuilder: (BuildContext, int index){
+        return new Card(
+          child:Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: Icon(
+                  ProductCodeResolver.productCodeResolver(restockingList[index].product.productCode),
+                  color: ColorResolver.colorResolver(restockingList[index].product.colour)
+                  ),
+                title: Text(restockingList[index].product.name),
+                subtitle: Text('Size ${restockingList[index].product.size} ${restockingList[index].product.fitting} in ${restockingList[index].product.colour}'),
+              )
+            ],
+          )
+        );
+      },
+    );
+  }
+
+  List<RestockingListItem> createRecommendList(RestockingList restockingList){
+    List<RestockingListItem> restockingListItems = new List<RestockingListItem>();
+
+    for (var item in restockingList.restockingListItems) {
+        restockingListItems.add(item);    
+    }
+    
+    if(restockingListItems.isEmpty){
+      print('Restocking List Is Empty');
+    }
+
+    return restockingListItems;
+  }
+
+
 }
+
+

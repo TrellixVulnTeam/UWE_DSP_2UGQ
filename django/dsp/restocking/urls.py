@@ -11,7 +11,7 @@ urlpatterns = [
 
     #Data Creation
     path('administration/data_creation/order_3000', views.create_order_3000, name='create_order_3000'),
-    path('administration/data_creation/transaction_200', views.create_transaction_200, name='create_transaction_200'),
+    path('administration/data_creation/transaction/<int:quantity>', views.create_transaction, name='create_transaction'),
     path('administration/data_creation/generate_restocking_list', views.generate_restocking_list, name='generate_restocking_list'),
 
     #ManagerNavigation
@@ -33,6 +33,12 @@ urlpatterns = [
     path('rest/restocking/<int:pk>/', views.DetailsViewRestocking.as_view(), name='details_restocking'),
     path('rest/restocking/<slug:date>/<slug:time>', views.DetailsViewRestockingByTime.as_view(), name='details_restocking_time'),
     path('rest/restocking/<slug:date>/<slug:time>/<int:product>', views.DetailsViewRestockingByTimeFilterProduct.as_view(), name='details_restocking_time_filter_product'),
+    path('rest/restocking/latest', views.get_latest_restocking, name='get_latest_restocking'),
+    path('rest/restocking/create', views.create_restocking, name='create_restocking'),
+    #Recommend
+    path('rest/recommend/<int:item>', views.recommend, name='recommend'),
+    path('rest/recommend/remove/<int:item>', views.remove_from_restocking, name='remove_from_restocking'),
+    path('rest/test/test', views.rest_test, name='rest_test'),
 
     #Forbidden Functions - Do not enable these unless you know what you're doing
     #path('forbidden/add_quantities', views.add_quantities, name='add_quantities'),

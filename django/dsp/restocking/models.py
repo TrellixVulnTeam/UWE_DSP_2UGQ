@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-import datetime
+from datetime import datetime
 
 from django.db import models
 from djchoices import ChoiceItem, DjangoChoices
@@ -59,10 +59,10 @@ class Size(DjangoChoices):
 
 # Create your models here.
 class Product(models.Model):
-    codes = validator.RegexValidator(r'[A-Z]', 'Only capital alphabet characters are allowed.')
+    codes = validator.RegexValidator(r'[a-z]', 'Only lower case alphabet characters are allowed.')
 
     def __str__(self):
-        return self.name + " size " + str(self.size) + " " + self.fitting + " in " + self.colour
+        return self.name + " size " + str(self.size) + " " + self.fitting + " in " + self.colour + " " + self.product_code
 
     name = models.CharField(max_length=50)
     size = models.DecimalField(max_digits=4, decimal_places=1, choices=Size.choices)
@@ -130,4 +130,7 @@ class RestockingListItem(models.Model):
     added = models.BooleanField(default=False)
     restocking_list = models.ForeignKey('RestockingList', related_name='restocking_items', on_delete=models.CASCADE)
 
-
+class ProductSales(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    date = models.DateField(default=datetime.now)
+    quantity = models.IntegerField(default=0, validators=[validator.MinValueValidator(1, "There is a value that is less than 0")])

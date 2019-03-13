@@ -2,12 +2,23 @@
 Contains views relating to the rest part of the project.
 """
 from datetime import datetime
+import json
 
+from django.core.serializers import serialize
+from restocking.processing import RecommendProcessing, RestockingListProcessing
+from django.http import HttpResponse, JsonResponse
 from rest_framework import generics
 from restocking.serializers import ProductSerializer, OrderSerializer, OrderItemSerializer, RestockingListSerializer, RestockingListItemSerializer
 from restocking.models import Product, Order, OrderItem, RestockingList, RestockingListItem
 from django.core.exceptions import ObjectDoesNotExist
+from restocking.serializers import serialize_recommendation
+from restocking.views.data_creation import generate_restocking_list 
 
+
+
+"""""""""""""""
+----ORDERS-----
+"""""""""""""""
 class DetailsViewOrder(generics.RetrieveUpdateAPIView):
     """Handles GET, PUT and DELETE for orders"""
     serializer_class = OrderSerializer
@@ -61,6 +72,9 @@ class CreateOrderItemView(generics.ListCreateAPIView):
             product=Product.objects.get(id__exact=serializer['product']['id'].value)
         ).save()
 
+"""""""""""""""
+----Products-----
+"""""""""""""""
 class DetailsViewProduct(generics.RetrieveUpdateAPIView):
     """Handles GET, PUT and DELETE for products"""
     serializer_class = ProductSerializer
@@ -68,6 +82,9 @@ class DetailsViewProduct(generics.RetrieveUpdateAPIView):
     def get_queryset(self):
         return Product.objects.all()
 
+"""""""""""""""
+----Restocking-----
+"""""""""""""""
 class DetailsViewRestocking(generics.RetrieveUpdateAPIView):
     """Handles GET, PUT and DELETE for products"""
     serializer_class = RestockingListSerializer
@@ -114,3 +131,25 @@ class DetailsViewRestockingByTimeFilterProduct(generics.RetrieveUpdateAPIView):
                     raise exception
 
             return query
+
+
+def get_latest_restocking(request):
+    return HttpResponse(RestockingList.objects.latest('id').id)
+
+def create_restocking(request):
+    RestockingListProcessing().create_restocking_list()
+    return HttpResponse(RestockingList.objects.latest('id').id)
+
+"""""""""""""""
+----MISC-----
+"""""""""""""""
+def rest_test(request):
+    return HttpResponse('Hello World!')
+
+def recommend(request, item):
+    return HttpResponse(json.dumps(serialize_recommendation(RecommendProcessing().recommend(item))))#
+
+def remove_from_restocking(request, item):
+    item = RestockingListItem.objects.get(id=item)
+    RestockingListItem.objects.filter(id=item.id).update(quantity=item.processed)
+    return HttpResponse('Success')

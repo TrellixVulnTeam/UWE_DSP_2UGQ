@@ -11,6 +11,8 @@ from django.shortcuts import HttpResponse
 
 from restocking.models import Order, OrderItem, Product, User, Transaction, TransactionItem, RestockingList, RestockingListItem
 
+from restocking.processing import RestockingListProcessing
+
 def create_order_3000(request):
     """
     Create an order of 3000 items
@@ -37,9 +39,9 @@ def create_order_3000(request):
 
     return HttpResponse('Done')
 
-def create_transaction_200(request):
+def create_transaction(request, quantity):
     """
-    Create 200 transactions
+    Create x number of transactions
 
     Adapted from test.
     """
@@ -48,7 +50,7 @@ def create_transaction_200(request):
     transaction_items = []
     transactions = []
 
-    for i in range(200):
+    for i in range(quantity):
         transaction = Transaction(user=User.objects.get(id=1))
         transaction.save()
         transactions.append(transaction)
@@ -70,27 +72,6 @@ def create_transaction_200(request):
     return HttpResponse('Done')
 
 def generate_restocking_list(request):
-    restocking_list = RestockingList.objects.latest()
-    transaction_items = []
-
-    for i in Transaction.objects.filter(
-            time__lt=datetime.datetime.now(),
-            time__gt=restocking_list.time,
-            date=restocking_list.date
-    ).iterator():
-        transaction_items.append(TransactionItem.objects.filter(transaction=i))
-
-    #Create a list of transaction items that will fall within the restocking list
-    restocking_list_items = transaction_items[0]
-    transaction_items.pop(0)
-    for i in transaction_items:
-        restocking_list_items = restocking_list_items | i
-
-    for item in list(restocking_list_items):
-        RestockingListItem.objects.create(
-            quantity=item.quantity,
-            product=item.product,
-            restocking_list=restocking_list
-        )
+    RestockingListProcessing().create_restocking_list()
     
     return HttpResponse('Done')

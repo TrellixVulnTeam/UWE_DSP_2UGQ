@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'utilities/MakeRequest.dart';
+import 'utilities/Toast.dart';
 import 'model/Query.dart';
 import 'ProcessRestockingList.dart';
 
@@ -93,6 +94,11 @@ class RestockingQueryForm{
             Padding(
               child:RaisedButton(
                 onPressed: () async {
+                  var latest = await MakeRequest.basicRequest(Query(model: 'restocking', query: 'create'));
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProcessRestockingList(query: Query(model: 'restocking', query: latest))),
+                  );
                 },
                 child:Text('Create New Report')
               ),
@@ -101,7 +107,11 @@ class RestockingQueryForm{
             Padding(
               child:RaisedButton(
                 onPressed: () async {
-
+                    var latest = await MakeRequest.basicRequest(Query(model: 'restocking', query: 'latest'));
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProcessRestockingList(query: Query(model: 'restocking', query: latest))),
+                  );
                 },
                 child:Text('Latest Report')
               ),

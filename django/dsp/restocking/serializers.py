@@ -73,3 +73,27 @@ class RestockingListSerializer(serializers.ModelSerializer):
             restocking_list_item.save()
 
         return instance
+
+
+def serialize_recommendation(candidates):
+    """
+    Serialises our recommendations into a list of products.
+    """
+    dictionary = {}
+    dictionary['recommendations'] = []
+    for index, item in enumerate(list(candidates)):
+        dictionary['recommendations'].append({})
+        dictionary['recommendations'][index]['id'] = item.id
+        dictionary['recommendations'][index]['name'] = item.name
+        dictionary['recommendations'][index]['size'] = str(item.size)
+        dictionary['recommendations'][index]['colour'] = item.colour
+        dictionary['recommendations'][index]['fitting'] = item.fitting
+        dictionary['recommendations'][index]['price'] = str(item.price)
+        dictionary['recommendations'][index]['sale'] = item.sale
+        dictionary['recommendations'][index]['product_type'] = item.product_type
+        dictionary['recommendations'][index]['product_code'] = item.product_code
+        dictionary['recommendations'][index]['department'] = item.department
+        dictionary['recommendations'][index]['floor_quantity'] = item.floor_quantity
+        dictionary['recommendations'][index]['stock_quantity'] = item.stock_quantity
+
+    return dictionary

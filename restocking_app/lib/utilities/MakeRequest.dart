@@ -5,6 +5,7 @@ import 'package:restocking_app/model/Query.dart';
 import 'package:restocking_app/Serializers.dart';
 import 'package:restocking_app/model/Order.dart';
 import 'package:restocking_app/model/RestockingList.dart';
+import 'package:restocking_app/model/Product.dart';
 
 
 
@@ -30,8 +31,18 @@ class MakeRequest{
   static Future<RestockingList> encodeRestockingList(Query query) async{
     final response = await http.get('$conn/${query.model}/${query.query}');
     if (response.statusCode == 200) {
-      //Serialise the response from the Django server into an order object.
+      //Serialise the response from the Django server into a restocking object.
       return Serializers.restockingListSerializer(response.body);
+    }else{
+      return null;
+    } 
+  }
+
+  static Future<RestockingList> recommendProduct(Query query)async{
+    final response = await http.get('$conn/${query.model}/${query.query}');
+    if (response.statusCode == 200) {
+      //Serialise the response from the Django server into a restocking object.
+      return Serializers.productSerializerRecommend(response.body);
     }else{
       return null;
     } 
@@ -54,5 +65,15 @@ class MakeRequest{
       headers: {"Content-Type" : "application/json"}
     );
     return response;
+  }
+
+  static Future<String> basicRequest(Query query) async{
+    final response = await http.get('$conn/${query.model}/${query.query}');
+    if (response.statusCode == 200) {
+      //return the raw response text
+      return response.body;
+    }else{
+      return null;
+    } 
   }
 }

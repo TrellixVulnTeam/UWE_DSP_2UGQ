@@ -173,4 +173,33 @@ class Serializers {
     };
     return jsonEncode(jsonMap);
   }
+
+  static RestockingList productSerializerRecommend(String responseBody){
+    Map<String, dynamic> data = json.decode(responseBody);
+
+    List<RestockingListItem> restockingListItems = new List<RestockingListItem>(); 
+
+    for (var item in data['recommendations']) {
+      restockingListItems.add(
+        RestockingListItem(
+          product: Product(
+            productId: item['id'],
+            name: item['name'],
+            size: double.parse(item['size']),
+            colour: item['colour'],
+            fitting: item['fitting'],
+            price: item['price'],
+            sale: item['sale'],
+            productType: item['product_type'],
+            productCode: item['product_code'],
+            department: item['department'],
+            floorQuantity: item['floor_quantity'],
+            stockQuantity: item['stock_quantity']
+          )
+        )
+      );
+    }
+    print(restockingListItems[0].product);
+    return RestockingList(restockingListItems:restockingListItems);
+  }
 }
