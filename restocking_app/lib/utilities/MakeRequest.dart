@@ -10,7 +10,7 @@ import 'package:restocking_app/model/Product.dart';
 
 
 class MakeRequest{
-  static const String conn = 'http://192.168.1.186:8000/restocking/rest';
+  static const String conn = 'http://xxx.xxx.x.x/restocking/rest';
   static Future<http.Response> getRequest(Query query) async{
     final response = await http.get('$conn/${query.model}/${query.query}');
     return response;
