@@ -3,7 +3,7 @@ Contains views regarding management navigation
 """
 import os
 
-from django.shortcuts import redirect, HttpResponseRedirect
+from django.shortcuts import redirect, HttpResponseRedirect, HttpResponse
 from django.views import generic
 from django.core.mail import send_mail
 
@@ -80,4 +80,8 @@ class CreateOrder(generic.ListView):
     context_object_name = 'order'
 
     def get_queryset(self):
-        return OrderProcessing().create_order()
+        order = OrderProcessing().create_order()
+        if order is None:
+            return HttpResponse("Error")
+        else:
+            return order

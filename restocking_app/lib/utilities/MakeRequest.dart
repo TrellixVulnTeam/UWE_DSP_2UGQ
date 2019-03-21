@@ -8,9 +8,9 @@ import 'package:restocking_app/model/RestockingList.dart';
 import 'package:restocking_app/model/Product.dart';
 
 
-
+//http://django-env.6hptsnnfzu.us-west-2.elasticbeanstalk.com/restocking/rest
 class MakeRequest{
-  static const String conn = 'http://django-env.6hptsnnfzu.us-west-2.elasticbeanstalk.com/restocking/rest';
+  static const String conn = 'http://192.168.1.186:8000/restocking/rest';
   static Future<http.Response> getRequest(Query query) async{
     final response = await http.get('$conn/${query.model}/${query.query}');
     return response;
@@ -69,6 +69,7 @@ class MakeRequest{
 
   static Future<String> basicRequest(Query query) async{
     final response = await http.get('$conn/${query.model}/${query.query}');
+    print(query.model + '/' + query.query);
     if (response.statusCode == 200) {
       //return the raw response text
       return response.body;

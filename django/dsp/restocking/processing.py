@@ -180,7 +180,8 @@ class RecommendProcessing():
         ).exclude(id=item.product.id)
 
     def recommend(self, item):
-        if item.product is not None:
+        print(item)
+        if hasattr(item, 'product'):
             print('isItem')
             print(item.id)
         else:
@@ -283,6 +284,9 @@ class RestockingListProcessing:
     
 class OrderProcessing:
     def create_order(self):
+        if Order.objects.filter(delivery_date=timezone.now().date()).exists():
+            return None
+
         transaction_items = []
 
         for i in Transaction.objects.filter(
@@ -295,8 +299,7 @@ class OrderProcessing:
         transaction_items.pop(0)
         for i in transaction_items:
             order_items = order_items | i
-        order = Order()
-        order.save()
+        order = Order.objects.create(order_processed=True, order_delivered=True, delivery_date=timezone.now().date())
 
         for item in list(order_items):
             OrderItem.objects.create(

@@ -1,18 +1,25 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
+
 from . import views
 
 app_name = 'restocking'
 urlpatterns = [
+    ################
     #AdminNavigation
+    ################
     path('administration', views.AdminIndexView.as_view(), name='admin_index'),
     path('administration/product_finder', views.ProductFinderView.as_view(), name='product_finder'),
     path('administration/product_finder/results', views.ProductFinderResults.as_view(), name='product_finder_results'),
+    #Transactions
+    path('administration/transactions', views.TransactionIndex.as_view(), name='transaction_index'),
+    path('administration/transactions/product_finder', views.TransactionProductFinderView.as_view(), name='transaction_product_finder'),
+    path('administration/transactions/product_finder/results', views.TransactionProductFinderResults.as_view(), name='transaction_product_finder_results'),
+    path('administration/transactions/process_transaction', views.process_transaction, name='process_transaction'),
 
     #Data Creation
-    path('administration/data_creation/order_3000', views.create_order_3000, name='create_order_3000'),
-    path('administration/data_creation/transaction/<int:quantity>', views.create_transaction, name='create_transaction'),
-    path('administration/data_creation/generate_restocking_list', views.generate_restocking_list, name='generate_restocking_list'),
+    #path('administration/data_creation/order_3000', views.create_order_3000, name='create_order_3000'),
+    #path('administration/data_creation/transaction/<int:quantity>', views.create_transaction, name='create_transaction'),
 
     #ManagerNavigation
     path('manager', views.ManagerIndexView.as_view(), name='manager_index'),
@@ -35,7 +42,7 @@ urlpatterns = [
     path('rest/restocking/<slug:date>/<slug:time>', views.DetailsViewRestockingByTime.as_view(), name='details_restocking_time'),
     path('rest/restocking/<slug:date>/<slug:time>/<int:product>', views.DetailsViewRestockingByTimeFilterProduct.as_view(), name='details_restocking_time_filter_product'),
     path('rest/restocking/latest', views.get_latest_restocking, name='get_latest_restocking'),
-    path('rest/restocking/create', views.create_restocking, name='create_restocking'),
+    path('rest/restocking/create', views.generate_restocking_list, name='generate_restocking_list'),
     #Recommend
     path('rest/recommend/<int:item>', views.recommend, name='recommend'),
     path('rest/recommend/remove/<int:item>', views.remove_from_restocking, name='remove_from_restocking'),

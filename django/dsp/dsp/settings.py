@@ -25,9 +25,9 @@ SECRET_KEY = open(os.getcwd() + '/dsp/secret_key.txt', 'r').read()
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['django-env.6hptsnnfzu.us-west-2.elasticbeanstalk.com', 'h2negusuwe.co.uk', 'harrynegus.me', 'www.harrynegus.me', 'h2negus-dsp-deployment.eu-west-2.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['django-env.6hptsnnfzu.us-west-2.elasticbeanstalk.com', 'harrynegus.me', 'www.harrynegus.me', '192.168.1.186']
 
-
+ 
 # Application definition
 
 INSTALLED_APPS = [
@@ -134,3 +134,6 @@ EMAIL_HOST_USER = open(os.getcwd() + '/dsp/email_user.txt', 'r').read()
 EMAIL_HOST_PASSWORD = open(os.getcwd() + '/dsp/email_pass.txt', 'r').read()
 
 EMAIL_USE_TLS = True
+
+#Data
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 20000

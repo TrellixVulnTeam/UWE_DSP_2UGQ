@@ -9,11 +9,17 @@
     </head>
     <body>
         <div class="container">
-            <h1>Admin</h1>
+            <h1>Transactions</h1>
             <ul>
-                <li><a href="{% url 'restocking:product_finder' %}">Product Finder</a></li>
-                <li><a href="{% url 'restocking:transaction_index' %}">Create Transaction</a></li>
+                <li><a href="{% url 'restocking:transaction_product_finder' %}">Create Transaction</a></li>
+                <li>Create Bulk Transactions:  
+                    <form method="POST">
+                        <input type="number" name="quantity" min="0" max="500"/>
+                        <input type="submit"/>
+                    </form>
+                </li>
             </ul>
+           
         </div>
     </body>
 </html>
