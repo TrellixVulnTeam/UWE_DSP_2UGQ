@@ -25,7 +25,7 @@ SECRET_KEY = open(os.getcwd() + '/dsp/secret_key.txt', 'r').read()
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['django-env.6hptsnnfzu.us-west-2.elasticbeanstalk.com', 'h2negusuwe.co.uk', 'harrynegus.me', 'www.harrynegus.me', 'h2negus-dsp-deployment.eu-west-2.elasticbeanstalk.com']
 
 
 # Application definition
@@ -124,6 +124,7 @@ DATE_INPUT_FORMATS = ['%Y-%m-%d']
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'static'
 
 # Email
 EMAIL_HOST = 'smtp-mail.outlook.com'

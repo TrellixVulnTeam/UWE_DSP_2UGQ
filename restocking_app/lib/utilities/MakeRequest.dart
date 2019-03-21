@@ -10,7 +10,7 @@ import 'package:restocking_app/model/Product.dart';
 
 
 class MakeRequest{
-  static const String conn = 'http://xxx.xxx.x.x/restocking/rest';
+  static const String conn = 'http://django-env.6hptsnnfzu.us-west-2.elasticbeanstalk.com/restocking/rest';
   static Future<http.Response> getRequest(Query query) async{
     final response = await http.get('$conn/${query.model}/${query.query}');
     return response;
