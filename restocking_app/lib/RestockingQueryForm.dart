@@ -95,10 +95,7 @@ class RestockingQueryForm{
               child:RaisedButton(
                 onPressed: () async {
                   var latest = await MakeRequest.basicRequest(Query(model: 'restocking', query: 'create'));
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProcessRestockingList(query: Query(model: 'restocking', query: latest))),
-                  );
+                  MyToast.showLongToast("List created.");
                 },
                 child:Text('Create New Report')
               ),

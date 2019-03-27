@@ -199,7 +199,6 @@ class Serializers {
         )
       );
     }
-    print(restockingListItems[0].product);
     return RestockingList(restockingListItems:restockingListItems);
   }
 }

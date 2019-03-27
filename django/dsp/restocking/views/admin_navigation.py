@@ -6,6 +6,7 @@ from django.views import generic
 from restocking.forms import ProductFinderForm
 
 from restocking.models import Product, Transaction, TransactionItem, User
+from django.db.models import F
 
 class AdminIndexView(generic.ListView):
     """
@@ -120,10 +121,26 @@ def process_transaction(request):
     print(request.POST.getlist('checked'))
     transaction = Transaction.objects.create(user=User.objects.get(id=1))
     for product_id in request.POST.getlist('checked'):
+        product = Product.objects.get(id=product_id)
+        quantity = 0
+        quantity_from_stock_room = 0
+        p = Product.objects.get(id=product_id)
+        for i in range(int(request.POST.get('val ' + product_id))):
+            if p.floor_quantity_from_request > 0:
+                p.floor_quantity_from_request = p.floor_quantity_from_request - 1
+                quantity_from_stock_room = quantity_from_stock_room + 1
+            elif p.floor_quantity > 0:
+                p.floor_quantity = p.floor_quantity - 1
+                quantity = quantity + 1
+            else:
+                p.stock_quantity = p.stock_quantity - 1
+                quantity_from_stock_room = quantity_from_stock_room + 1
+        p.save()
+       
         TransactionItem.objects.create(
-            quantity=request.POST.get('val ' + product_id),
+            quantity=quantity,
+            quantity_from_stock_room=quantity_from_stock_room,
             product=Product.objects.get(id=product_id),
             transaction=transaction
         )
-
     return HttpResponse('Success!')

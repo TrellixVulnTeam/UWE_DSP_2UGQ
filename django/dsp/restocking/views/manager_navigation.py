@@ -65,8 +65,8 @@ def process_delivery(request, delivery_date):
     print(send_mail(
         subject='Delivery ' + str(order.delivery_date),
         message='Dear Manager,\n\nA delivery has been processed.\n\n' + '\n'.join(str(p) for p in order_items_readable) + '\n\nRegards,\nStore Manager',
-        from_email=open(os.getcwd() + '\\dsp\\email_user.txt', 'r').read(),
-        recipient_list=[open(os.getcwd() + '\\dsp\\email_user.txt', 'r').read()],
+        from_email=open(os.getcwd() + '/dsp/email_user.txt', 'r').read(),
+        recipient_list=[open(os.getcwd() + '/dsp/email_user.txt', 'r').read()],
         fail_silently=False,
     ))
 

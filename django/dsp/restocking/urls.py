@@ -47,6 +47,13 @@ urlpatterns = [
     path('rest/recommend/<int:item>', views.recommend, name='recommend'),
     path('rest/recommend/remove/<int:item>', views.remove_from_restocking, name='remove_from_restocking'),
     path('rest/test/test', views.rest_test, name='rest_test'),
+    #Stock Queries
+    path('rest/stock_query/<slug:name>/<int:size>/<int:half>', views.resolve_product_from_stock_query, name='resolve_product_from_stock_query'),
+    path('rest/stock_query/increment/<int:productId>', views.increment_request_quantity, name='increment_request_quantity'),
+    path('rest/stock_query/decrement/<int:productId>', views.decrement_request_quantity, name='decrement_request_quantity'),
+    path('rest/stock_query/found/<int:productId>', views.found_requested_product, name='found_request_product'),
+    path('rest/stock_query/restock/<int:productId>', views.increment_product_quantity, name='increment_product_quantity'),
+    path('rest/stock_query/get', views.gather_requested_products, name='gather_requested_products'),
 
     #Forbidden Functions - Do not enable these unless you know what you're doing
     #path('forbidden/add_quantities', views.add_quantities, name='add_quantities'),

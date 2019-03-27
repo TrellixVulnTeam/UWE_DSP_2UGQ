@@ -3,6 +3,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 import 'OrderQueryForm.dart';
 import 'RestockingQueryForm.dart';
+import 'StockQueryForm.dart';
 
 void main() => runApp(MyMain());
 
@@ -48,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             OrderQueryForm.orderQueryForm(context),
             RestockingQueryForm.restockingQueryForm(context),
-            Icon(Icons.access_alarms),
+            StockQueryForm.stockQueryForm(context),
           ],
         )
       )

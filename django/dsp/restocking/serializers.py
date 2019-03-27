@@ -97,3 +97,24 @@ def serialize_recommendation(candidates):
         dictionary['recommendations'][index]['stock_quantity'] = item.stock_quantity
 
     return dictionary
+
+def serialize_product(product):
+    """
+    Serialises our product into a json format.
+    """
+    dictionary = {}
+    dictionary['product'] = {}
+    dictionary['product']['id'] = product.id
+    dictionary['product']['name'] = product.name
+    dictionary['product']['size'] = str(product.size)
+    dictionary['product']['colour'] = product.colour
+    dictionary['product']['fitting'] = product.fitting
+    dictionary['product']['price'] = str(product.price)
+    dictionary['product']['sale'] = product.sale
+    dictionary['product']['product_type'] = product.product_type
+    dictionary['product']['product_code'] = product.product_code
+    dictionary['product']['department'] = product.department
+    dictionary['product']['floor_quantity'] = product.floor_quantity
+    dictionary['product']['stock_quantity'] = product.stock_quantity
+
+    return dictionary

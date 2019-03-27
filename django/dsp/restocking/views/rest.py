@@ -11,7 +11,7 @@ from rest_framework import generics
 from restocking.serializers import ProductSerializer, OrderSerializer, OrderItemSerializer, RestockingListSerializer, RestockingListItemSerializer
 from restocking.models import Product, Order, OrderItem, RestockingList, RestockingListItem
 from django.core.exceptions import ObjectDoesNotExist
-from restocking.serializers import serialize_recommendation
+from restocking.serializers import serialize_recommendation, serialize_product
 from restocking.views.data_creation import generate_restocking_list 
 
 
@@ -147,9 +147,55 @@ def rest_test(request):
     return HttpResponse('Hello World!')
 
 def recommend(request, item):
-    return HttpResponse(json.dumps(serialize_recommendation(RecommendProcessing().recommend(item))))#
+    return HttpResponse(json.dumps(serialize_recommendation(RecommendProcessing().recommend(item))))
 
 def remove_from_restocking(request, item):
     item = RestockingListItem.objects.get(id=item)
-    RestockingListItem.objects.filter(id=item.id).update(quantity=item.processed)
+    item.quantity = item.processed
+    item.save()
     return HttpResponse('Success')
+
+def resolve_product_from_stock_query(request, name, size, half):
+    size=str(size) + "." + str(half)
+    name = name.replace("_", " ")
+    print(name)
+    products = Product.objects.filter(name__icontains=name, size=size)
+    if len(products) == 0:
+        return HttpResponse('Failure')
+    return HttpResponse(json.dumps(serialize_recommendation(products)))
+
+"""""""""""""""""""""
+----Product Requests---
+"""""""""""""""""""""
+def increment_request_quantity(request, productId):
+    product = Product.objects.get(id=productId)
+    product.request_quantity = product.request_quantity + 1
+    product.save()
+    return HttpResponse(str(product.request_quantity))
+
+def decrement_request_quantity(request, productId):
+    product = Product.objects.get(id=productId)
+    product.request_quantity = product.request_quantity - 1
+    product.save()
+    return HttpResponse(str(product.request_quantity))
+
+def found_requested_product(request, productId):
+    product = Product.objects.get(id=productId)
+    product.request_quantity = product.request_quantity - 1
+    product.floor_quantity_from_request = product.floor_quantity_from_request + 1
+    product.stock_quantity = product.stock_quantity - 1
+    product.save()
+    return HttpResponse(str(product.request_quantity))
+
+def gather_requested_products(request):
+    return HttpResponse(json.dumps(serialize_recommendation(Product.objects.filter(request_quantity__gt=0))))
+
+def increment_product_quantity(request, productId):
+    product = Product.objects.get(id=productId)
+    if product.floor_quantity_from_request > 0:
+        product.floor_quantity_from_request = product.floor_quantity_from_request - 1
+        product.stock_quantity = product.stock_quantity + 1
+    elif product.floor_quantity > 0:
+        product.floor_quantity = product.floor_quantity - 1
+        product.stock_quantity = product.stock_quantity + 1
+        

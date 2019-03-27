@@ -23,6 +23,7 @@
         <th>Department</th>
         <th>Floor Quantity</th>
         <th>Stock Quantity</th>
+        <th>Request Quantity</th>
         {% for result in results %}
             <tr>
                 <td>{{result.id}}</td>
@@ -37,6 +38,7 @@
                 <td>{{result.department}}</td>
                 <td>{{result.floor_quantity}}</td>
                 <td>{{result.stock_quantity}}</td>
+                <td>{{result.request_quantity}}</td>
             </tr>
             {% endfor %}
         </table>

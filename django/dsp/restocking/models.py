@@ -73,8 +73,10 @@ class Product(models.Model):
     product_type = models.CharField(max_length=10, choices=ProductType.choices)
     product_code = models.CharField(max_length=10, validators=[codes])
     department = models.CharField(max_length=10, choices=Department.choices)
-    floor_quantity = models.IntegerField(default=0)
-    stock_quantity = models.IntegerField(default=0)
+    floor_quantity = models.IntegerField(default=0, validators=[validator.MinValueValidator(0, "There is a value that is less than 0")])
+    stock_quantity = models.IntegerField(default=0, validators=[validator.MinValueValidator(0, "There is a value that is less than 0")])
+    request_quantity = models.IntegerField(default=0, validators=[validator.MinValueValidator(0, "There is a value that is less than 0")])
+    floor_quantity_from_request = models.IntegerField(default=0, validators=[validator.MinValueValidator(0, "There is a value that is less than 0")])
 
 class Order(models.Model):
     order_processed = models.BooleanField(default=False)
@@ -86,7 +88,7 @@ class Order(models.Model):
         return str(self.delivery_date)
 
 class OrderItem(models.Model):
-    quantity = models.IntegerField(default=1, validators=[validator.MinValueValidator(1, "There is a value that is less than 0")])
+    quantity = models.IntegerField(default=1, validators=[validator.MinValueValidator(1, "There is a value that is less than 1")])
     processed = models.IntegerField(default=0, validators=[validator.MinValueValidator(0, "There is a value that is less than 0")])
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
     order = models.ForeignKey('Order', related_name='order_items', on_delete=models.CASCADE)
@@ -111,6 +113,7 @@ class Transaction(models.Model):
 
 class TransactionItem(models.Model):
     quantity = models.IntegerField(default=1, validators=[validator.MinValueValidator(1, "There is a value that is less than 1")])
+    quantity_from_stock_room = models.IntegerField(default=0, validators=[validator.MinValueValidator(0, "There is a value that is less than 0")])
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
     transaction = models.ForeignKey('Transaction', on_delete=models.CASCADE)
 
@@ -135,8 +138,3 @@ class RestockingListItem(models.Model):
     def __str__(self):
         return str(self.restocking_list.id) + ' ' + str(self.product) + ' (' + str(self.quantity) + ')'
 
-
-class ProductSales(models.Model):
-    product = models.ForeignKey('Product', on_delete=models.CASCADE)
-    date = models.DateField(auto_now=True)
-    quantity = models.IntegerField(default=0, validators=[validator.MinValueValidator(1, "There is a value that is less than 0")])
