@@ -119,14 +119,7 @@ class TestOrder(TestCase):
                 #print(products[rnd_product].stock_quantity)
                 while rnd_quantity > products[rnd_product].stock_quantity:
                     rnd_quantity = random.randint(1, 3)
-                products[rnd_product].stock_quantity -= rnd_quantity
-                sales = ProductSales.objects.get_or_create(
-                    product=products[rnd_product],
-                    date=timezone.now(),
-                    defaults={'quantity': 0}
-                )[0]
-                sales.quantity = sales.quantity + rnd_quantity
-                sales.save()
+                products[rnd_product].stock_quantity -= rnd_quantity#
                 #print('\t ' + str(products[rnd_product].stock_quantity) + ' ' + str(sales.quantity))
                 transaction_items.append(TransactionItem(
                     quantity=rnd_quantity,
@@ -211,5 +204,5 @@ class TestOrder(TestCase):
                 order=order
             )
 
-        for item in OrderItem.objects.filter(order=order).iterator():
-            print(item)
+        #for item in OrderItem.objects.filter(order=order).iterator():
+            #print(item)

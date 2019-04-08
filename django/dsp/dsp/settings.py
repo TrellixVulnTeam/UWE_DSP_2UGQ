@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = open(os.getcwd() + '/dsp/secret_key.txt', 'r').read()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['django-env.6hptsnnfzu.us-west-2.elasticbeanstalk.com', 'harrynegus.me', 'www.harrynegus.me', '192.168.1.186']
 

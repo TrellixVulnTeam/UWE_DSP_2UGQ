@@ -103,14 +103,13 @@ class TestRestockingList(TestCase):
         for item in transaction_items:
             item.save()
 
-    #TODO long running test where you make a restocking report today and then leave it with some transactions and then do it tomrw. 
     def test_restocking_list(self):
         restocking_list = RestockingList(time=str(timezone.now()))
         restocking_list.save()
         transaction_items = []
 
-        print(str(timezone.now()))
-        print(RestockingList.objects.get(id__exact=restocking_list.id-1).time)
+        #print(str(timezone.now()))
+        #print(RestockingList.objects.get(id__exact=restocking_list.id-1).time)
 
         for i in Transaction.objects.filter(
                 time__lt=timezone.now(),
@@ -132,5 +131,5 @@ class TestRestockingList(TestCase):
                 restocking_list=restocking_list
             )
 
-        for i in transaction_items:
-            print(i)
+        #for i in transaction_items:
+            #print(i)

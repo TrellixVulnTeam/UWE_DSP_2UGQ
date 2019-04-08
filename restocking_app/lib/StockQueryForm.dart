@@ -53,6 +53,7 @@ class StockQueryForm{
                   if (_stockFormKey.currentState.validate()) {
                     var products = await validateProduct(StockQuery(name: _nameController.text, size: _sizeController.text));
                     if(products == false){
+                      MyToast.showLongToast("No products were found.");
                       print(false);
                     }else{
                       Navigator.push(

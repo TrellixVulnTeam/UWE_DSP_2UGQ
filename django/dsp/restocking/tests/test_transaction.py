@@ -115,11 +115,11 @@ class TestTransaction(TestCase):
             for j in range(random.randint(1, 3)):
                 rnd_quantity = random.randint(1, 3)
                 rnd_product = random.randrange(0, len(products))
-                print(products[rnd_product].stock_quantity)
+                #print(products[rnd_product].stock_quantity)
                 while rnd_quantity > products[rnd_product].stock_quantity:
                     rnd_quantity = random.randint(1, 3)
                 products[rnd_product].stock_quantity -= rnd_quantity
-                print('\t ' + str(products[rnd_product].stock_quantity))
+                #print('\t ' + str(products[rnd_product].stock_quantity))
                 transaction_items.append(TransactionItem(
                     quantity=rnd_quantity,
                     product=products[rnd_product],
@@ -129,6 +129,6 @@ class TestTransaction(TestCase):
 
         for item in transaction_items:
             item.save()
-            print(item.transaction.time)
+            #print(item.transaction.time)
 
         self.assertEqual(len(transactions), 600)

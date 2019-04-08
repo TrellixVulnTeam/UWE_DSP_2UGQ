@@ -7,6 +7,7 @@ from datetime import datetime
 from django.db import models
 from djchoices import ChoiceItem, DjangoChoices
 import django.core.validators as validator
+from django.core.exceptions import ValidationError
 
 class Fitting(DjangoChoices):
     D = ChoiceItem('d', 'D')
@@ -59,12 +60,12 @@ class Size(DjangoChoices):
 
 # Create your models here.
 class Product(models.Model):
-    codes = validator.RegexValidator(r'[a-z]', 'Only lower case alphabet characters are allowed.')
+    codes = validator.RegexValidator(r'[a-z]', 'Only upper case alphabet characters are allowed.')
 
     def __str__(self):
         return self.name + " size " + str(self.size) + " " + self.fitting + " in " + self.colour + " " + self.product_code
 
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, null=False, blank=False)
     size = models.DecimalField(max_digits=4, decimal_places=1, choices=Size.choices)
     colour = models.CharField(max_length=20)
     fitting = models.CharField(max_length=8, choices=Fitting.choices, default=Fitting.STANDARD)
@@ -77,6 +78,26 @@ class Product(models.Model):
     stock_quantity = models.IntegerField(default=0, validators=[validator.MinValueValidator(0, "There is a value that is less than 0")])
     request_quantity = models.IntegerField(default=0, validators=[validator.MinValueValidator(0, "There is a value that is less than 0")])
     floor_quantity_from_request = models.IntegerField(default=0, validators=[validator.MinValueValidator(0, "There is a value that is less than 0")])
+
+    def clean(self):
+        if self.name is None or self.name == '':
+            raise ValidationError("Name can't be blank or null")
+
+        if len(self.name) > 50:
+            raise ValidationError("Name can't be longer than 50 characters")
+
+        if self.price > 999:
+            raise ValidationError("Price can't be higher than 999")
+
+        if len(str(self.price).split('.')[1]) > 2:
+            raise ValidationError("Price can't have more than 2 decimal places.")
+
+        if len(self.product_code) > 1:
+            raise ValidationError("Code can't be longer than 1 character")
+
+        for c in self.product_code:
+            if c.islower():
+                raise ValidationError("Code can only be upper case alphabet characters")
 
 class Order(models.Model):
     order_processed = models.BooleanField(default=False)
